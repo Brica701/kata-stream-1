@@ -8,6 +8,9 @@ import org.junit.jupiter.api.Test;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import static org.iesvdm.kata1.PetType.BIRD;
 
 public class Exercise2Test extends PetDomainForKata
 {
@@ -18,11 +21,11 @@ public class Exercise2Test extends PetDomainForKata
     {
         //TODO
         // replace null with a Predicate lambda which checks for PetType.CAT
-        Predicate<Person> predicate = p -> false;
-
+        Predicate<Person> predicate = person -> person.hasPet(PetType.CAT); ;
+        boolean AnyPersonHasCat = this.people.stream().anyMatch(predicate);
         //TODO
         // replace false by a check in a stream of people
-        Assertions.assertTrue(false);
+        Assertions.assertTrue(AnyPersonHasCat, "No person in the list has a cat");
     }
 
     @Test
@@ -33,7 +36,8 @@ public class Exercise2Test extends PetDomainForKata
         Predicate<Person> predicate = Person::isPetPerson;
         //TODO
         // replace with a method call send to people that checks if all people have pets
-        boolean result = true;
+        boolean result = this.people.stream()
+                .allMatch(predicate);
 
         Assertions.assertFalse(result);
     }
@@ -56,7 +60,9 @@ public class Exercise2Test extends PetDomainForKata
     {
         //TODO
         // replace with a stream on people to obtain Mary Smith
-        Person result = new Person("", "");
+        Person result = this.people.stream().filter(person -> "Mary"
+                .equals(person.getFirstName()) && "Smith"
+                .equals(person.getLastName())).findFirst().get();
 
         Assertions.assertEquals("Mary", result.getFirstName());
         Assertions.assertEquals("Smith", result.getLastName());
@@ -69,11 +75,13 @@ public class Exercise2Test extends PetDomainForKata
     {
         //TODO
         // transform this into a list of pets from people
-        List<Pet> petList = new ArrayList<>();
+        List<Pet> petList = this.people.stream().flatMap(person -> person.getPets().stream())
+                .collect(Collectors.toList());
 
         //TODO
         // obtain serpySnake pet from petList
-        Pet serpySnake = new Pet(PetType.BIRD,"", 0);
+        Pet serpySnake = petList.stream().filter(pet -> "Serpy"
+                .equals(pet.getName())).findFirst().orElse(new Pet(PetType.BIRD,"",0));
 
         Assertions.assertEquals("🐍",serpySnake.getType().toString());
     }
@@ -84,7 +92,9 @@ public class Exercise2Test extends PetDomainForKata
     {
         //TODO
         // replace with only the pet owners
-        List<Person> petPeople = new ArrayList<>();
+        List<Person> petPeople = this.people.stream()
+                .filter(Person::hasPets) // Usamos el método hasPets para verificar si tienen mascotas
+                .collect(Collectors.toList());
 
         Assertions.assertEquals(7, petPeople.size());
     }
@@ -97,9 +107,11 @@ public class Exercise2Test extends PetDomainForKata
 
         //TODO
         // use the previous function to obtain the set of pet types
-        Set<PetType> petTypes = new HashSet<>();
+        Set<PetType> petTypes = this.people.stream()
+                .flatMap(person -> person.getPetTypes().keySet().stream())
+                .collect(Collectors.toSet());
 
-        var expectedSet = Set.of(PetType.CAT, PetType.DOG, PetType.TURTLE, PetType.HAMSTER, PetType.BIRD, PetType.SNAKE);
+        var expectedSet = Set.of(PetType.CAT, PetType.DOG, PetType.TURTLE, PetType.HAMSTER, BIRD, PetType.SNAKE);
         Assertions.assertEquals(expectedSet, petTypes);
     }
 
@@ -111,7 +123,9 @@ public class Exercise2Test extends PetDomainForKata
 
         //TODO
         // use the previous function to obtain the set of emojis
-        Set<String> petEmojis = new HashSet<>();
+        Set<String> petEmojis = this.people.stream()
+                .flatMap(person -> person.getPetEmojis().keySet().stream())
+                .collect(Collectors.toSet());
 
         var expected = Set.of("🐱", "🐶", "🐢", "🐹", "🐦", "🐍");
         Assertions.assertEquals(expected, petEmojis);
@@ -136,7 +150,8 @@ public class Exercise2Test extends PetDomainForKata
     {
         //TODO
         // test with a stream on people, if anyone has a cat at least
-        boolean peopleHaveCatsLambda = false;
+        boolean peopleHaveCatsLambda = this.people.stream()
+                .anyMatch(pet -> pet.hasPet(PetType.CAT));
         Assertions.assertTrue(peopleHaveCatsLambda);
 
     }
@@ -148,7 +163,8 @@ public class Exercise2Test extends PetDomainForKata
     {
         //TODO
         // test if all the people have cats
-        boolean peopleHaveCats = true;
+        boolean peopleHaveCats = this.people.stream()
+                .allMatch(pet -> pet.hasPet(PetType.CAT));
         Assertions.assertFalse(peopleHaveCats);
     }
 

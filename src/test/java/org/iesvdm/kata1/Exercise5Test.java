@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
@@ -18,8 +19,8 @@ public class Exercise5Test extends PetDomainForKata
     {
         //TODO
         // Obtain a partition over people with or without pets
-        List<Person> partitionListPetPeople = new ArrayList<>();
-        List<Person> partitionListNotPetPeople = new ArrayList<>();
+        List<Person> partitionListPetPeople = this.people.stream().filter(Person::isPetPerson).toList();
+        List<Person> partitionListNotPetPeople = this.people.stream().filter(person -> !person.isPetPerson()).toList();
 
         Assertions.assertEquals(7, partitionListPetPeople.size());
         Assertions.assertEquals(1, partitionListNotPetPeople.size());
@@ -32,7 +33,8 @@ public class Exercise5Test extends PetDomainForKata
     {
         //TODO
         // obtain the oldest pet
-        Pet oldestPet = new Pet(PetType.HAMSTER, "", 0);
+
+        Pet oldestPet =
         Assertions.assertEquals(PetType.DOG, oldestPet.getType());
         Assertions.assertEquals(4, oldestPet.getAge());
     }

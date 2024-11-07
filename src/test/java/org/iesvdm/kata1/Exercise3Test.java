@@ -6,6 +6,8 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 
 public class Exercise3Test extends PetDomainForKata
@@ -36,7 +38,11 @@ public class Exercise3Test extends PetDomainForKata
 
         //TODO
         // Replace by a stream the previous pattern
-        Map<String, Long> petEmojiCounts2 = new HashMap<>();
+        Map<String, Long> petEmojiCounts2 = petTypes.stream()
+                .map(PetType::toString)
+                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+
+
         Assertions.assertEquals(expectedMap, petEmojiCounts2);
 
     }

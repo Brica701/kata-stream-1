@@ -49,7 +49,10 @@ public class Exercise2Test extends PetDomainForKata
     {
         //TODO
         // replace with a method call send to this.people that checks how many people have cats
-        int count = 0;
+        long count = people.stream()
+                .filter(person -> person.getPets().stream()
+                        .anyMatch(pet -> pet.getType() == PetType.CAT))
+                        .count();
 
         Assertions.assertEquals(2, count);
     }
@@ -60,7 +63,8 @@ public class Exercise2Test extends PetDomainForKata
     {
         //TODO
         // replace with a stream on people to obtain Mary Smith
-        Person result = this.people.stream().filter(person -> "Mary"
+        Person result = this.people.stream()
+                .filter(person -> "Mary"
                 .equals(person.getFirstName()) && "Smith"
                 .equals(person.getLastName())).findFirst().get();
 
@@ -75,13 +79,15 @@ public class Exercise2Test extends PetDomainForKata
     {
         //TODO
         // transform this into a list of pets from people
-        List<Pet> petList = this.people.stream().flatMap(person -> person.getPets().stream())
+        List<Pet> petList = this.people.stream()
+                .flatMap(person -> person.getPets().stream())
                 .collect(Collectors.toList());
 
         //TODO
         // obtain serpySnake pet from petList
         Pet serpySnake = petList.stream().filter(pet -> "Serpy"
-                .equals(pet.getName())).findFirst().orElse(new Pet(PetType.BIRD,"",0));
+                .equals(pet.getName()))
+                .findFirst().orElse(new Pet(PetType.BIRD,"",0));
 
         Assertions.assertEquals("🐍",serpySnake.getType().toString());
     }
@@ -93,7 +99,7 @@ public class Exercise2Test extends PetDomainForKata
         //TODO
         // replace with only the pet owners
         List<Person> petPeople = this.people.stream()
-                .filter(Person::hasPets) // Usamos el método hasPets para verificar si tienen mascotas
+                .filter(Person::hasPets)
                 .collect(Collectors.toList());
 
         Assertions.assertEquals(7, petPeople.size());

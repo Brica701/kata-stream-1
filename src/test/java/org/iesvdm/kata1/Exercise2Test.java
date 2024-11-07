@@ -175,7 +175,10 @@ public class Exercise2Test extends PetDomainForKata
     {
         //TODO
         // obtain persons with cats
-        List<Person> peopleWithCats = new ArrayList<>();
+        List<Person> peopleWithCats = this.people.stream()
+                .filter(person -> person.getPets().stream().anyMatch(pet -> pet.getType()==PetType.CAT))
+                .collect(Collectors.toList());
+
         Assertions.assertEquals(2, peopleWithCats.size());
     }
 
@@ -186,7 +189,10 @@ public class Exercise2Test extends PetDomainForKata
     {
         //TODO
         // obtain persons without cats
-        List<Person> peopleWithoutCats = new ArrayList<>();
+        List<Person> peopleWithoutCats = this.people.stream()
+            .filter(person -> person.getPets().stream().noneMatch(pet -> pet.getType()==PetType.CAT))
+                .collect(Collectors.toList());
+
         Assertions.assertEquals(6, peopleWithoutCats.size());
     }
 }
